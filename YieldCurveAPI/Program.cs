@@ -8,13 +8,13 @@ builder.Services.AddScoped<YieldDataService>();
 builder.Services.AddScoped<ChartGenerationService>();
 builder.Services.AddScoped<FileGenerationService>();
 
-// Add CORS Policy
+// Add CORS Policy to Allow All Origins
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowReactApp",
+    options.AddPolicy("AllowAll",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000") // Replace with your frontend's URL
+            policy.AllowAnyOrigin() // Allows requests from any origin
                   .AllowAnyMethod()
                   .AllowAnyHeader();
         });
@@ -26,8 +26,8 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-// Enable CORS
-app.UseCors("AllowReactApp");
+// Enable CORS with the "AllowAll" policy
+app.UseCors("AllowAll");
 
 app.MapControllers();
 app.Run();
