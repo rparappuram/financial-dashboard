@@ -13,41 +13,41 @@ namespace YieldCurveAPI.Services
 
         private Dictionary<int, double> BootstrapZeroRates(Dictionary<int, double> parYields)
         {
-        var zeroRates = new Dictionary<int, double>();
-        var sortedMaturities = parYields.Keys.OrderBy(k => k).ToList();
+            var zeroRates = new Dictionary<int, double>();
+            var sortedMaturities = parYields.Keys.OrderBy(k => k).ToList();
 
-        foreach (var maturity in sortedMaturities)
-        {
-            double parYield = parYields[maturity] / 100.0;
-            double maturityInYears = maturity / 12.0;
-
-            if (maturity <= 12) // For maturities <= 12 months, use the par rate as the zero rate?
+            foreach (var maturity in sortedMaturities)
             {
-                zeroRates[maturity] = parYield * 100.0;
-                continue;
-            }
+                double parYield = parYields[maturity] / 100.0;
+                double maturityInYears = maturity / 12.0;
 
-            // Sum the discounted coupons for prev maturities
-            double sumDiscountedCoupons = 0.0;
-            for (int year = 1; year < maturityInYears; year++)
-            {
-                int prevMaturityMonths = year * 12;
-                if (zeroRates.ContainsKey(prevMaturityMonths))
+                if (maturity <= 12) // For maturities <= 12 months, use the par rate as the zero rate?
                 {
-                    double prevZeroRate = zeroRates[prevMaturityMonths] / 100.0;
-                    double discountFactor = 1.0 / Math.Pow(1.0 + prevZeroRate, year);
-                    sumDiscountedCoupons += parYield * discountFactor;
+                    zeroRates[maturity] = parYield * 100.0;
+                    continue;
                 }
+
+                // Sum the discounted coupons for prev maturities
+                double sumDiscountedCoupons = 0.0;
+                for (int year = 1; year < maturityInYears; year++)
+                {
+                    int prevMaturityMonths = year * 12;
+                    if (zeroRates.ContainsKey(prevMaturityMonths))
+                    {
+                        double prevZeroRate = zeroRates[prevMaturityMonths] / 100.0;
+                        double discountFactor = 1.0 / Math.Pow(1.0 + prevZeroRate, year);
+                        sumDiscountedCoupons += parYield * discountFactor;
+                    }
+                }
+
+                // Solve for zero rate at current maturity
+                double remainingValue = 1.0 - sumDiscountedCoupons; // principal amount
+                double zeroRate = Math.Pow(1.0 / remainingValue, 1.0 / maturityInYears) - 1.0; // ANNUAL compounding
+                zeroRates[maturity] = zeroRate * 100.0;
             }
 
-            // Solve for zero rate at current maturity
-            double remainingValue = 1.0 - sumDiscountedCoupons; // principal amount
-            double zeroRate = Math.Pow(1.0 / remainingValue, 1.0 / maturityInYears) - 1.0; // ANNUAL compounding
-            zeroRates[maturity] = zeroRate * 100.0;
+            return zeroRates;
         }
-
-        return zeroRates;
-    }
 
         private Dictionary<int, double> InterpolateZeroRates(Dictionary<int, double> zeroRatesAtKeyMaturities)
         {

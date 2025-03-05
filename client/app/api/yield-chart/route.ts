@@ -1,18 +1,18 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const date = searchParams.get("date") || "latest"
+  const searchParams = request.nextUrl.searchParams;
+  const date = searchParams.get("date") || "latest";
 
   // In a real application, this would fetch the actual SVG from a data source
   // For demonstration, we're returning a placeholder SVG
-  const svgContent = generatePlaceholderSVG(date)
+  const svgContent = generatePlaceholderSVG(date);
 
   return new NextResponse(svgContent, {
     headers: {
       "Content-Type": "image/svg+xml",
     },
-  })
+  });
 }
 
 // Function to generate a placeholder SVG chart
@@ -112,6 +112,5 @@ function generatePlaceholderSVG(date: string) {
       <rect x="600" y="90" width="12" height="12" fill="#ff7f0e" />
       <text x="620" y="100" class="legend">Zero Rate</text>
     </svg>
-  `
+  `;
 }
-

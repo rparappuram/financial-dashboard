@@ -93,7 +93,8 @@ namespace YieldCurveAPI.Services
             {
                 worksheet.Cell(row, 1).Value = period;
                 worksheet.Cell(row, 2).Value = periodDates[period];
-                if (parYieldCurve.ContainsKey(period)) {
+                if (parYieldCurve.ContainsKey(period))
+                {
                     worksheet.Cell(row, 3).Value = parYieldCurve[period];
                 }
                 worksheet.Cell(row, 4).Value = zeroRateCurve[period];

@@ -22,7 +22,7 @@ public class TreasuryXmlService
             // Fetch XML from Treasury API
             string xmlData = await _httpClient.GetStringAsync(url);
             XDocument xmlDoc = XDocument.Parse(xmlData);
-            
+
             // Extract all entries
             var entries = xmlDoc.Descendants("{http://www.w3.org/2005/Atom}entry");
 
