@@ -77,7 +77,7 @@ export default function Home() {
 
     try {
       // In a real app, this would fetch the SVG from the backend
-      const response = await fetch(`http://localhost:5215/api/yield-chart?date=${dateStr}`)
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/yield-chart?date=${dateStr}`)
 
       if (!response.ok) {
         setError(`Missing complete data for ${dateStr}.`)
@@ -102,7 +102,7 @@ export default function Home() {
 
     try {
       // In a real app, this would fetch the latest SVG from the backend
-      const response = await fetch("http://localhost:5215/api/yield-chart")
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/yield-chart`)
 
       if (!response.ok) {
         throw new Error(`Error fetching chart: ${response.statusText}`)
@@ -125,7 +125,7 @@ export default function Home() {
 
   // Handle download
   const handleDownload = async (type: "csv" | "xlsx") => {
-    let url = `http://localhost:5215/api/download?type=${type}`
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/download?type=${type}`
 
     if (year && month && day) {
       const dateStr = `${year}-${month}-${day}`
