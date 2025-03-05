@@ -49,11 +49,18 @@ namespace YieldCurveAPI.Services
             var parYieldCurve = yieldData["ParYieldCurve"];
             var zeroRateCurve = yieldData["ZeroRateCurve"];
 
-            foreach (var period in parYieldCurve.Keys)
+            foreach (var period in zeroRateCurve.Keys)
             {
                 csv.WriteField(period); // Period in months
                 csv.WriteField(periodDates[period]); // Period date
-                csv.WriteField(parYieldCurve[period]); // Par yield rate
+                if (parYieldCurve.ContainsKey(period))
+                {
+                    csv.WriteField(parYieldCurve[period]); // Par yield curve
+                }
+                else
+                {
+                    csv.WriteField(null); // Empty field
+                }
                 csv.WriteField(zeroRateCurve[period]); // Zero rate curve
                 csv.NextRecord();
             }
