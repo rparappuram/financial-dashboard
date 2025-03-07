@@ -4,7 +4,7 @@ namespace YieldCurveAPI.Services
 {
     public class ChartGenerationService
     {
-        public string GenerateYieldCurveChartSvg(Dictionary<string, Dictionary<int, double>> yieldData, string type = "svg")
+        public string GenerateYieldCurveChartSvg(Dictionary<string, Dictionary<int, double>> yieldData)
         {
             if (yieldData == null || !yieldData.ContainsKey("ParYieldCurve") || !yieldData.ContainsKey("ZeroRateCurve"))
             {
@@ -17,6 +17,7 @@ namespace YieldCurveAPI.Services
             // Convert dictionary keys to numerical maturities
             double[] maturities = new double[parYields.Count];
             double[] parYieldValues = new double[parYields.Count];
+            double[] allMaturities = new double[zeroRates.Count];
             double[] zeroRateValues = new double[zeroRates.Count];
 
             int index = 0;
@@ -30,6 +31,7 @@ namespace YieldCurveAPI.Services
             index = 0;
             foreach (var kvp in zeroRates)
             {
+                allMaturities[index] = kvp.Key; // Maturity in months
                 zeroRateValues[index] = kvp.Value; // Zero rate percentage
                 index++;
             }
@@ -43,10 +45,11 @@ namespace YieldCurveAPI.Services
             parPlot.LineWidth = 2;
 
             // Add Zero Rate Curve (dashed line)
-            var zeroPlot = plt.Add.Scatter(maturities, zeroRateValues);
+            var zeroPlot = plt.Add.Scatter(allMaturities, zeroRateValues);
             zeroPlot.LegendText = "Continuous Monthly Zero-Rate Curve";
             zeroPlot.LineWidth = 2;
             zeroPlot.LinePattern = LinePattern.Dashed;
+            zeroPlot.MarkerSize = 0;
 
             // Chart Labels
             plt.Title("U.S. Treasury Rates");

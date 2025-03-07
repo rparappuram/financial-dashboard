@@ -20,7 +20,6 @@ namespace YieldCurveAPI.Services
             // Calculate continuous zero rates
             var zeroRates = _rateCalculatorService.CalculateContinuousZeroRates(parYields);
             if (zeroRates == null) return null;
-            Console.WriteLine($"\n\n\nTotal entries found: \n\n\n");
 
             // Combine par yields and zero rates into a single dictionary
             var result = new Dictionary<string, Dictionary<int, double>>
